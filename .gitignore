@@ -18,6 +18,7 @@ checkpoints/best/*
 runs/
 *.pt
 !checkpoints/improved/best_model.pt
+!checkpoints/best/best_model.pt
 *.pth
 *.ckpt
 .streamlit/
