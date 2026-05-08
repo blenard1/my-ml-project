@@ -15,10 +15,8 @@ The default dataset target is ECSSD because it is public, compact, and includes 
 - `demo_notebook.ipynb`: notebook workflow for loading a trained checkpoint and running inference.
 - `download_ecssd.py`: ECSSD downloader using the official CUHK links.
 - `checkpoints/best/best_model.pt`: final trained model checkpoint.
-- `artifacts/final_report.md`: report source.
-- `artifacts/final_report.pdf`: final PDF report.
-- `artifacts/presentation_slides.pptx`: five-slide editable presentation.
-- `artifacts/presentation_slides.pdf`: PDF export of the same slides.
+
+The final report PDF and presentation PDF are kept outside this GitHub repository for submission.
 
 ## Setup
 
@@ -74,7 +72,7 @@ python train.py --output-dir checkpoints/smoke --epochs 1 --synthetic-samples 24
 ## Evaluate
 
 ```powershell
-python evaluate.py --data-dir data/ecssd --checkpoint checkpoints/improved/best_model.pt --output-dir artifacts/evaluation/improved_balanced --threshold 0.55
+python evaluate.py --data-dir data/ecssd --checkpoint checkpoints/best/best_model.pt --output-dir artifacts/evaluation/best_balanced --threshold 0.40
 ```
 
 This writes `metrics.json`, `metrics.csv`, and example prediction grids with input image, ground truth, predicted mask, and overlay.
@@ -103,7 +101,7 @@ The final report uses the metrics exported by `evaluate.py`.
 To reproduce the final improved precision/recall tradeoff:
 
 ```powershell
-python scripts/threshold_sweep.py --data-dir data/ecssd --checkpoint checkpoints/best/best_model.pt --output artifacts/evaluation/best_threshold_sweep.csv
+python evaluate.py --data-dir data/ecssd --checkpoint checkpoints/best/best_model.pt --output-dir artifacts/evaluation/best_balanced --threshold 0.40
 ```
 
 For the final improved high-precision result:
