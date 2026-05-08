@@ -1,7 +1,7 @@
 # Mentor Submission Checklist
 
 Project: End-to-End Salient Object Detection  
-Final model: `checkpoints/improved/best_model.pt`  
+Final model: `checkpoints/best/best_model.pt`  
 Dataset used: ECSSD, 1000 image/mask pairs
 
 ## Required Deliverables
@@ -15,14 +15,14 @@ Dataset used: ECSSD, 1000 image/mask pairs
 | Simple demo notebook or app | Done | `demo_notebook.ipynb`, `app.py` |
 | Project report, 6-10 pages | Done | `artifacts/final_report.pdf` |
 | Presentation slides, max 5 slides | Done | `artifacts/presentation_slides.pptx`, `artifacts/presentation_slides.pdf` |
-| Trained model | Done | `checkpoints/improved/best_model.pt` |
+| Trained model | Done | `checkpoints/best/best_model.pt` |
 
 ## Final Results
 
 | Mode | Threshold | IoU | Precision | Recall | F1 | MAE |
 | --- | --- | --- | --- | --- | --- | --- |
-| Improved balanced | 0.55 | 0.5364 | 0.6478 | 0.7711 | 0.6915 | 0.1935 |
-| Improved high precision | 0.94 | 0.3426 | 0.8726 | 0.3622 | 0.5007 | 0.1935 |
+| Best balanced | 0.40 | 0.5956 | 0.6949 | 0.8203 | 0.7394 | 0.1395 |
+| Best high precision | 0.91 | 0.4557 | 0.8711 | 0.4902 | 0.6147 | 0.1395 |
 
 ## Files To Send Or Upload
 
@@ -30,7 +30,7 @@ Upload the full repository to GitHub, including:
 
 - Source code: `data_loader.py`, `sod_model.py`, `train.py`, `evaluate.py`, `app.py`, `metrics.py`, `download_ecssd.py`.
 - Demo: `demo_notebook.ipynb`.
-- Trained model: `checkpoints/improved/best_model.pt`.
+- Trained model: `checkpoints/best/best_model.pt`.
 - Report: `artifacts/final_report.pdf`.
 - Slides: `artifacts/presentation_slides.pptx` or `artifacts/presentation_slides.pdf`.
 - Metrics/visual proof: `artifacts/evaluation/improved_balanced/` and `artifacts/evaluation/improved_precision085/`.

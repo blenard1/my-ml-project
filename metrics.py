@@ -15,6 +15,27 @@ def soft_iou(logits: torch.Tensor, targets: torch.Tensor, eps: float = 1e-6) -> 
     return ((intersection + eps) / (union + eps)).mean()
 
 
+def soft_dice(logits: torch.Tensor, targets: torch.Tensor, eps: float = 1e-6) -> torch.Tensor:
+    probs = torch.sigmoid(logits).flatten(start_dim=1)
+    targets = targets.flatten(start_dim=1)
+    intersection = (probs * targets).sum(dim=1)
+    denominator = probs.sum(dim=1) + targets.sum(dim=1)
+    return ((2.0 * intersection + eps) / (denominator + eps)).mean()
+
+
+def focal_bce_loss(
+    logits: torch.Tensor,
+    targets: torch.Tensor,
+    alpha: float = 0.65,
+    gamma: float = 2.0,
+) -> torch.Tensor:
+    bce = F.binary_cross_entropy_with_logits(logits, targets, reduction="none")
+    probs = torch.sigmoid(logits)
+    pt = torch.where(targets >= 0.5, probs, 1.0 - probs)
+    alpha_t = torch.where(targets >= 0.5, alpha, 1.0 - alpha)
+    return (alpha_t * (1.0 - pt).pow(gamma) * bce).mean()
+
+
 def saliency_loss(
     logits: torch.Tensor,
     targets: torch.Tensor,
@@ -23,6 +44,26 @@ def saliency_loss(
 ) -> torch.Tensor:
     bce = F.binary_cross_entropy_with_logits(logits, targets)
     return bce_weight * bce + iou_weight * (1.0 - soft_iou(logits, targets))
+
+
+def combined_saliency_loss(logits: torch.Tensor, targets: torch.Tensor, mode: str = "bce_iou") -> torch.Tensor:
+    """Loss presets for saliency segmentation experiments."""
+
+    mode = mode.lower()
+    bce = F.binary_cross_entropy_with_logits(logits, targets)
+    dice = 1.0 - soft_dice(logits, targets)
+    iou = 1.0 - soft_iou(logits, targets)
+    if mode == "bce":
+        return bce
+    if mode == "bce_iou":
+        return bce + 0.5 * iou
+    if mode == "bce_dice":
+        return 0.5 * bce + dice
+    if mode == "bce_dice_iou":
+        return 0.5 * bce + 0.7 * dice + 0.3 * iou
+    if mode == "focal_dice":
+        return focal_bce_loss(logits, targets) + dice
+    raise ValueError(f"Unknown loss mode: {mode}")
 
 
 @torch.no_grad()

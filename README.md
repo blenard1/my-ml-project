@@ -14,7 +14,7 @@ The default dataset target is ECSSD because it is public, compact, and includes 
 - `app.py`: Streamlit demo for uploading an image and viewing mask, overlay, and inference time.
 - `demo_notebook.ipynb`: notebook workflow for loading a trained checkpoint and running inference.
 - `download_ecssd.py`: ECSSD downloader using the official CUHK links.
-- `checkpoints/improved/best_model.pt`: final trained model checkpoint.
+- `checkpoints/best/best_model.pt`: final trained model checkpoint.
 - `artifacts/final_report.md`: report source.
 - `artifacts/final_report.pdf`: final PDF report.
 - `artifacts/presentation_slides.pptx`: five-slide editable presentation.
@@ -85,7 +85,7 @@ This writes `metrics.json`, `metrics.csv`, and example prediction grids with inp
 streamlit run app.py
 ```
 
-The app loads `checkpoints/improved/best_model.pt` by default. Use `Balanced mask` for the best visual segmentation and `High precision` for the 0.85+ precision operating point.
+The app loads `checkpoints/best/best_model.pt` by default. Use `Balanced mask` for the best visual segmentation and `High precision` for the 0.85+ precision operating point.
 
 ## Final Experiment Table
 
@@ -97,15 +97,17 @@ The final report uses the metrics exported by `evaluate.py`.
 | High precision | Same checkpoint, threshold 0.85 | 0.1231 | 0.8656 | 0.1255 | 0.2080 | 0.2158 |
 | Improved balanced | U-Net skips + BatchNorm/Dropout, threshold 0.55 | 0.5364 | 0.6478 | 0.7711 | 0.6915 | 0.1935 |
 | Improved high precision | U-Net skips + BatchNorm/Dropout, threshold 0.94 | 0.3426 | 0.8726 | 0.3622 | 0.5007 | 0.1935 |
+| Best balanced | Fine-tuned with BCE/Dice/IoU, threshold 0.40 | 0.5956 | 0.6949 | 0.8203 | 0.7394 | 0.1395 |
+| Best high precision | Fine-tuned with BCE/Dice/IoU, threshold 0.91 | 0.4557 | 0.8711 | 0.4902 | 0.6147 | 0.1395 |
 
 To reproduce the final improved precision/recall tradeoff:
 
 ```powershell
-python scripts/threshold_sweep.py --data-dir data/ecssd --checkpoint checkpoints/improved/best_model.pt --output artifacts/evaluation/improved_threshold_sweep.csv
+python scripts/threshold_sweep.py --data-dir data/ecssd --checkpoint checkpoints/best/best_model.pt --output artifacts/evaluation/best_threshold_sweep.csv
 ```
 
 For the final improved high-precision result:
 
 ```powershell
-python evaluate.py --data-dir data/ecssd --checkpoint checkpoints/improved/best_model.pt --output-dir artifacts/evaluation/improved_precision085 --threshold 0.94
+python evaluate.py --data-dir data/ecssd --checkpoint checkpoints/best/best_model.pt --output-dir artifacts/evaluation/best_precision085 --threshold 0.91
 ```

@@ -10,6 +10,11 @@ checkpoints/improved/*
 !checkpoints/improved/best_model.pt
 !checkpoints/improved/config.json
 !checkpoints/improved/training_log.csv
+!checkpoints/best/
+checkpoints/best/*
+!checkpoints/best/best_model.pt
+!checkpoints/best/config.json
+!checkpoints/best/training_log.csv
 runs/
 *.pt
 !checkpoints/improved/best_model.pt
@@ -27,6 +32,17 @@ artifacts/evaluation/*
 !artifacts/evaluation/improved_precision085/metrics.json
 !artifacts/evaluation/improved_precision085/prediction_grid.png
 !artifacts/evaluation/improved_0007_comparison.png
+!artifacts/evaluation/best_balanced/
+!artifacts/evaluation/best_balanced/metrics.csv
+!artifacts/evaluation/best_balanced/metrics.json
+!artifacts/evaluation/best_balanced/prediction_grid.png
+!artifacts/evaluation/best_precision085/
+!artifacts/evaluation/best_precision085/metrics.csv
+!artifacts/evaluation/best_precision085/metrics.json
+!artifacts/evaluation/best_precision085/prediction_grid.png
+!artifacts/evaluation/best_threshold_sweep.csv
+!artifacts/evaluation/best_threshold_sweep_fine.csv
+!artifacts/evaluation/best_0007_comparison.png
 Blenard Tahiraj ML/
 mentor_submission/
 mentor_submission.zip

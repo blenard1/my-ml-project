@@ -13,6 +13,7 @@ from sod_model import build_model
 
 def default_checkpoint_path() -> str:
     candidates = [
+        Path("checkpoints/best/best_model.pt"),
         Path("checkpoints/improved/best_model.pt"),
         Path("checkpoints/baseline/best_model.pt"),
         Path("checkpoints/ecssd_smoke/best_model.pt"),
@@ -71,9 +72,9 @@ def main() -> None:
             index=0,
         )
         if preset == "Balanced mask":
-            threshold = 0.55
+            threshold = 0.40
         elif preset == "High precision":
-            threshold = 0.94
+            threshold = 0.91
         else:
             threshold = st.slider("Mask threshold", min_value=0.05, max_value=0.95, value=0.55, step=0.01)
         device_name = st.selectbox("Device", ["auto", "cpu", "cuda"], index=0)

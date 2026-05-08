@@ -113,12 +113,16 @@ The actual values exported by `evaluate.py` are:
 | High precision, threshold 0.85 | 0.1231 | 0.8656 | 0.1255 | 0.2080 | 0.2158 |
 | Improved balanced, threshold 0.55 | 0.5364 | 0.6478 | 0.7711 | 0.6915 | 0.1935 |
 | Improved high precision, threshold 0.94 | 0.3426 | 0.8726 | 0.3622 | 0.5007 | 0.1935 |
+| Best balanced, threshold 0.40 | 0.5956 | 0.6949 | 0.8203 | 0.7394 | 0.1395 |
+| Best high precision, threshold 0.91 | 0.4557 | 0.8711 | 0.4902 | 0.6147 | 0.1395 |
 
 The baseline result above comes from a full ECSSD run using 700 training images, 150 validation images, and 150 held-out test images. The model trained for 15 epochs on CPU with `128 x 128` inputs, 4 encoder-decoder levels, and 16 base channels. The best checkpoint was selected by validation loss and evaluated on the test split.
 
 For a precision-focused operating point, the mask threshold was increased from `0.50` to `0.85`. This raises held-out test precision to `0.8656`, which satisfies the 0.85 precision target. The tradeoff is lower recall because the model only marks pixels when it is highly confident.
 
 The improved model adds U-Net-style skip connections, batch normalization, and light dropout. Skip connections preserve spatial detail from the encoder and reduce the coarse-blob failure mode seen in the baseline. The balanced improved checkpoint reaches `0.6915` F1 and `0.5364` IoU on the held-out test split. For the precision requirement, the improved checkpoint can use threshold `0.94`, reaching `0.8726` precision while keeping much better recall and F1 than the baseline high-precision setting.
+
+The final best checkpoint fine-tunes the improved model using a combined BCE, Dice, and IoU loss with AdamW. This produced the strongest held-out test result: `0.7394` F1, `0.5956` IoU, `0.8203` recall, and `0.1395` MAE in balanced mode. The same checkpoint also satisfies the high-precision requirement at threshold `0.91`, reaching `0.8711` precision.
 
 ## 8. Visualization and Demo
 
@@ -159,11 +163,17 @@ Train improved model:
 python train.py --data-dir data/ecssd --output-dir checkpoints/improved --epochs 15 --image-size 128 --batch-size 4 --base-channels 16 --depth 4 --variant improved --patience 15 --sample-every 5
 ```
 
+Fine-tune final best model:
+
+```powershell
+python train.py --data-dir data/ecssd --output-dir checkpoints/best --epochs 20 --image-size 128 --batch-size 4 --base-channels 16 --depth 4 --variant improved --loss bce_dice_iou --lr 0.00035 --weight-decay 0.0001 --patience 20 --sample-every 5 --init-checkpoint checkpoints/improved/best_model.pt
+```
+
 Evaluate:
 
 ```powershell
-python evaluate.py --data-dir data/ecssd --checkpoint checkpoints/improved/best_model.pt --output-dir artifacts/evaluation/improved_balanced --threshold 0.55
-python evaluate.py --data-dir data/ecssd --checkpoint checkpoints/improved/best_model.pt --output-dir artifacts/evaluation/improved_precision085 --threshold 0.94
+python evaluate.py --data-dir data/ecssd --checkpoint checkpoints/best/best_model.pt --output-dir artifacts/evaluation/best_balanced --threshold 0.40
+python evaluate.py --data-dir data/ecssd --checkpoint checkpoints/best/best_model.pt --output-dir artifacts/evaluation/best_precision085 --threshold 0.91
 ```
 
 Run demo:
